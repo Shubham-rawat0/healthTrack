@@ -1,0 +1,17 @@
+import mongoose from "mongoose";
+
+const MealSchema = new mongoose.Schema(
+  {
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    food: { type: String, required: true }, 
+    description:{type:String},
+    calories: { type: Number},
+    protein: { type: Number, default: 0 },
+    carbs: { type: Number, default: 0 },
+    fat: { type: Number, default: 0 },
+    date: { type: Date, default: Date.now },
+  },
+  { timestamps: true }
+);
+
+export const Meal = mongoose.model("Meal", MealSchema);
