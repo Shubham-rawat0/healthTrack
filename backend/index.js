@@ -1,9 +1,10 @@
 import express from "express"
 import dotenv from "dotenv"
 import cors from "cors"
-import connectDB from "./db/connectDb"
+import connectDB from "./db/connectDb.js"
 import authRouter from './routes/auth.js'
 import userRouter from './routes/user.js'
+import cloudinary from "./config/cloudinary.js";
 
 dotenv.config()
 
@@ -14,7 +15,9 @@ app.use('/api/auth',authRouter)
 app.use('/api/user',userRouter)
 
 app.listen(process.env.PORT,()=>{
-    conaole.log(`app listening at ${process.env.PORT}`);
+    console.log(`app listening at ${process.env.PORT}`);
 })
 
 connectDB()
+
+console.log("Cloudinary configured:", cloudinary.config().cloud_name);

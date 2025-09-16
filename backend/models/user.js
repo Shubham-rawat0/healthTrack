@@ -13,6 +13,10 @@ const UserSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
     },
+    goal:{
+      type:String,
+      default:"aesthetics"
+    },
     password: {
       type: String,
       required: true,
@@ -21,6 +25,9 @@ const UserSchema = new mongoose.Schema(
     weight: { type: Number },
   
     height: { type: Number },
+    currentWeight: { type: Number ,default:0},
+  
+    currentHeight: { type: Number ,default:0},
     age: {
       type: Number,
       required: true,
