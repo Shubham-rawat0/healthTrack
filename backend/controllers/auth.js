@@ -68,7 +68,7 @@ export const trackProgress = async (req, res) => {
 export const updateProfile = async (req, res) => {
   try {
     const user = req.user;
-
+    if (!user) return res.status(401).json({ message: "User not found" });
     const allowedUpdates = [
       "name",
       "age",
@@ -77,34 +77,58 @@ export const updateProfile = async (req, res) => {
       "currentWeight",
       "currentHeight",
       "goal",
-      "pfp",
     ];
 
     const updates = {};
     for (const key of allowedUpdates) {
       if (req.body[key] !== undefined) {
-        updates[key] = req.body[key];
+        const value = req.body[key];
+        if (
+          [
+            "age",
+            "height",
+            "weight",
+            "currentWeight",
+            "currentHeight",
+          ].includes(key)
+        ) {
+          if (isNaN(value) || value < 0) {
+            return res
+              .status(400)
+              .json({ message: `${key} must be a positive number` });
+          }
+          updates[key] = Number(value);
+        } else {
+          updates[key] = value;
+        }
       }
     }
-    if (req.file) {
-      const result = await new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-          { folder: "profile_pics" },
-          (error, result) => {
-            if (error) reject(error);
-            else resolve(result);
-          }
-        );
-        stream.end(req.file.buffer);
-      });
 
-      updates.pfp = result.secure_url; 
+    if (req.file) {
+      try {
+        const result = await new Promise((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream(
+            { folder: "profile_pics" },
+            (error, result) => {
+              if (error) reject(error);
+              else resolve(result);
+            }
+          );
+          stream.end(req.file.buffer);
+        });
+        updates.pfp = result.secure_url;
+      } catch (err) {
+        console.error("Cloudinary upload failed:", err);
+        return res
+          .status(500)
+          .json({ message: "Profile picture upload failed" });
+      }
     }
 
     Object.assign(user, updates);
     await user.save();
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "Profile updated successfully",
       user: {
         name: user.name,
@@ -120,9 +144,11 @@ export const updateProfile = async (req, res) => {
     });
   } catch (error) {
     console.error("Error updating profile:", error);
-    res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server error" });
   }
 };
+
+
 
 
 
