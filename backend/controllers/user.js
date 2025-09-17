@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { sendMail } from "../nodemail/sendmail.js";
+import { sendMail } from "../utils/sendmail.js";
 import { User } from "../models/user.js";
 import jwt from "jsonwebtoken";
 
@@ -17,6 +17,12 @@ export const signup = async (req, res) => {
     if (!name || !email || !password || !age) {
       return res.status(400).json({ message: "All fields are required" });
     }
+    if (password.length < 6) {
+      return res
+        .status(400)
+        .json({ message: "Password must be at least 6 characters" });
+    }
+
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "Email already registered" });
