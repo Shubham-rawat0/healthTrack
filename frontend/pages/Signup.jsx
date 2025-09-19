@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+
+// This is a single-file, self-contained React component.
+// External libraries like React Router and axios are not used
+// to keep the file runnable without a build process.
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -14,7 +16,7 @@ const Signup = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const navigate = useNavigate();
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -59,206 +61,297 @@ const Signup = () => {
 
     setLoading(true);
     setMessage("");
+    setIsSuccess(false);
+
     try {
-      const response = await axios.post(
+      const response = await fetch(
         `${import.meta.env.VITE_BACKEND_API}/api/user/signup`,
         {
-          email: formData.email,
-          password: formData.password,
-          age: parseInt(formData.age), 
-          name: formData.name,
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password,
+            age: parseInt(formData.age),
+            name: formData.name,
+          }),
         }
       );
 
-      if (response.status === 201) {
-        setMessage("Sign-up successful! Redirecting to login...");
-        if (response.data.token) {
-          localStorage.setItem("token", response.data.token);
-        }
-        navigate("/login");
+      if (response.ok) {
+        setMessage("Sign-up successful! You can now log in.");
+        setIsSuccess(true);
+      } else {
+        const errorData = await response.json();
+        setMessage(`Error: ${errorData.message || "Server error"}`);
+        setIsSuccess(false);
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response) {
-          setMessage(`Error: ${error.response.data.message || "Server error"}`);
-        } else if (error.request) {
-          setMessage(
-            "Error: No response from server. Please check your network."
-          );
-        } else {
-          setMessage("An unexpected error occurred. Please try again.");
-        }
-      } else {
-        setMessage("An unexpected error occurred. Please try again.");
-      }
+      setMessage("An unexpected error occurred. Please try again.");
+      setIsSuccess(false);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100 p-4">
-      <div className="w-full max-w-lg rounded-2xl bg-white p-8 shadow-xl">
-        <h1 className="mb-6 text-center text-3xl font-bold text-gray-800">
-          Sign Up
-        </h1>
-        <p className="mb-8 text-center text-gray-600">
-          Create your account to get started with HealthTrack.
-        </p>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label
-              className="mb-2 block text-sm font-medium text-gray-700"
-              htmlFor="name"
-            >
-              Full Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className={`w-full rounded-lg border px-4 py-2 transition duration-300 focus:outline-none focus:ring-2 ${
-                errors.name
-                  ? "border-red-500"
-                  : "border-gray-300 focus:border-blue-500"
-              }`}
-            />
-            {errors.name && (
-              <p className="mt-1 text-sm text-red-500">{errors.name}</p>
-            )}
-          </div>
+    <>
+      <style>
+        {`
+        .container {
+          display: flex;
+          min-height: 100vh;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          background-color: #f3f4f6;
+          padding: 1rem;
+          font-family: sans-serif;
+        }
 
-          <div>
-            <label
-              className="mb-2 block text-sm font-medium text-gray-700"
-              htmlFor="email"
-            >
-              Email Address
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className={`w-full rounded-lg border px-4 py-2 transition duration-300 focus:outline-none focus:ring-2 ${
-                errors.email
-                  ? "border-red-500"
-                  : "border-gray-300 focus:border-blue-500"
-              }`}
-            />
-            {errors.email && (
-              <p className="mt-1 text-sm text-red-500">{errors.email}</p>
-            )}
-          </div>
+        .form-container {
+          width: 100%;
+          max-width: 32rem;
+          border-radius: 1rem;
+          background-color: white;
+          padding: 2rem;
+          box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
 
-          <div>
-            <label
-              className="mb-2 block text-sm font-medium text-gray-700"
-              htmlFor="age"
-            >
-              Age
-            </label>
-            <input
-              type="number"
-              id="age"
-              name="age"
-              value={formData.age}
-              onChange={handleChange}
-              className={`w-full rounded-lg border px-4 py-2 transition duration-300 focus:outline-none focus:ring-2 ${
-                errors.age
-                  ? "border-red-500"
-                  : "border-gray-300 focus:border-blue-500"
-              }`}
-            />
-            {errors.age && (
-              <p className="mt-1 text-sm text-red-500">{errors.age}</p>
-            )}
-          </div>
+        .title {
+          margin-bottom: 1.5rem;
+          text-align: center;
+          font-size: 1.875rem;
+          font-weight: 700;
+          color: #1f2937;
+        }
 
-          <div>
-            <label
-              className="mb-2 block text-sm font-medium text-gray-700"
-              htmlFor="password"
-            >
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className={`w-full rounded-lg border px-4 py-2 transition duration-300 focus:outline-none focus:ring-2 ${
-                errors.password
-                  ? "border-red-500"
-                  : "border-gray-300 focus:border-blue-500"
-              }`}
-            />
-            {errors.password && (
-              <p className="mt-1 text-sm text-red-500">{errors.password}</p>
-            )}
-          </div>
+        .subtitle {
+          margin-bottom: 2rem;
+          text-align: center;
+          color: #4b5563;
+        }
 
-          {/* Confirm Password Field */}
-          <div>
-            <label
-              className="mb-2 block text-sm font-medium text-gray-700"
-              htmlFor="confirmPassword"
-            >
-              Confirm Password
-            </label>
-            <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              className={`w-full rounded-lg border px-4 py-2 transition duration-300 focus:outline-none focus:ring-2 ${
-                errors.confirmPassword
-                  ? "border-red-500"
-                  : "border-gray-300 focus:border-blue-500"
-              }`}
-            />
-            {errors.confirmPassword && (
-              <p className="mt-1 text-sm text-red-500">
-                {errors.confirmPassword}
-              </p>
-            )}
-          </div>
+        .form {
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+        }
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full transform rounded-lg bg-indigo-600 py-3 text-lg font-bold text-white transition duration-300 ease-in-out hover:scale-105 hover:bg-indigo-700 disabled:bg-gray-400"
-          >
-            {loading ? "Creating Account..." : "Sign Up"}
-          </button>
-        </form>
+        .input-group {
+          display: flex;
+          flex-direction: column;
+        }
 
-        {message && (
-          <p
-            className={`mt-4 text-center text-sm font-medium ${
-              message.includes("Error") ? "text-red-600" : "text-green-600"
-            }`}
-          >
-            {message}
+        .label {
+          margin-bottom: 0.5rem;
+          display: block;
+          font-size: 0.875rem;
+          font-weight: 500;
+          color: #374151;
+        }
+
+        .input {
+          width: 100%;
+          border-radius: 0.5rem;
+          border: 1px solid #d1d5db;
+          padding: 0.5rem 1rem;
+          transition: all 0.3s ease-in-out;
+          outline: none;
+          box-sizing: border-box;
+        }
+
+        .input:focus {
+          border-color: #6366f1;
+          box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+        }
+
+        .input-error {
+          border-color: #ef4444;
+        }
+
+        .error-text {
+          margin-top: 0.25rem;
+          font-size: 0.875rem;
+          color: #ef4444;
+        }
+
+        .submit-button {
+          width: 100%;
+          border-radius: 0.5rem;
+          background-color: #4f46e5;
+          padding: 0.75rem;
+          font-size: 1.125rem;
+          font-weight: 700;
+          color: white;
+          transition: all 0.3s ease-in-out;
+          border: none;
+          cursor: pointer;
+        }
+
+        .submit-button:hover:not(:disabled) {
+          transform: scale(1.05);
+          background-color: #4338ca;
+        }
+        
+        .submit-button:disabled {
+          background-color: #9ca3af;
+          cursor: not-allowed;
+          transform: scale(1);
+        }
+
+        .message {
+          margin-top: 1rem;
+          text-align: center;
+          font-size: 0.875rem;
+          font-weight: 600;
+        }
+
+        .message-error {
+          color: #dc2626;
+        }
+
+        .message-success {
+          color: #16a34a;
+        }
+
+        .footer {
+          margin-top: 1.5rem;
+          text-align: center;
+          font-size: 0.875rem;
+          color: #4b5563;
+        }
+
+        .link {
+          font-weight: 600;
+          color: #4f46e5;
+          text-decoration: none;
+          transition: color 0.3s ease-in-out;
+        }
+
+        .link:hover {
+          color: #3730a3;
+        }
+        `}
+      </style>
+      <div className="container">
+        <div className="form-container">
+          <h1 className="title">Sign Up</h1>
+          <p className="subtitle">
+            Create your account to get started with HealthTrack.
           </p>
-        )}
+          <form onSubmit={handleSubmit} className="form">
+            <div className="input-group">
+              <label className="label" htmlFor="name">
+                Full Name
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                className={`input ${errors.name ? "input-error" : ""}`}
+              />
+              {errors.name && <p className="error-text">{errors.name}</p>}
+            </div>
 
-        <div className="mt-6 text-center text-sm text-gray-600">
-          Already have an account?{" "}
-          <Link
-            to="/login"
-            className="font-semibold text-indigo-600 hover:text-indigo-800"
-          >
-            Log In
-          </Link>
+            <div className="input-group">
+              <label className="label" htmlFor="email">
+                Email Address
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className={`input ${errors.email ? "input-error" : ""}`}
+              />
+              {errors.email && <p className="error-text">{errors.email}</p>}
+            </div>
+
+            <div className="input-group">
+              <label className="label" htmlFor="age">
+                Age
+              </label>
+              <input
+                type="number"
+                id="age"
+                name="age"
+                value={formData.age}
+                onChange={handleChange}
+                className={`input ${errors.age ? "input-error" : ""}`}
+              />
+              {errors.age && <p className="error-text">{errors.age}</p>}
+            </div>
+
+            <div className="input-group">
+              <label className="label" htmlFor="password">
+                Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className={`input ${errors.password ? "input-error" : ""}`}
+              />
+              {errors.password && (
+                <p className="error-text">{errors.password}</p>
+              )}
+            </div>
+
+            <div className="input-group">
+              <label className="label" htmlFor="confirmPassword">
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className={`input ${
+                  errors.confirmPassword ? "input-error" : ""
+                }`}
+              />
+              {errors.confirmPassword && (
+                <p className="error-text">{errors.confirmPassword}</p>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className={`submit-button ${loading ? "" : "btn-hover"}`}
+            >
+              {loading ? "Creating Account..." : "Sign Up"}
+            </button>
+          </form>
+
+          {message && (
+            <p
+              className={`message ${
+                message.includes("Error") ? "message-error" : "message-success"
+              }`}
+            >
+              {message}
+            </p>
+          )}
+
+          <div className="footer">
+            Already have an account?{" "}
+            <a href="#" className="link">
+              Log In
+            </a>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
