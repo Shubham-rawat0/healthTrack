@@ -8,6 +8,13 @@ const ExerciseSchema = new mongoose.Schema({
   completed: { type: Boolean, default: false },
   description: { type: String },
   type: { type: String, required: true },
+  logs: [
+    {
+      date: { type: Date, default: Date.now }, 
+      completedSets: { type: Number, default: 0 }, 
+      completed: { type: Boolean, default: false }, 
+    },
+  ],
 });
 
 const WorkoutSchema = new mongoose.Schema(
