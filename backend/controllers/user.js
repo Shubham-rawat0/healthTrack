@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
-import { sendMail } from "../utils/sendmail.js";
 import { User } from "../models/user.js";
 import jwt from "jsonwebtoken";
+// import { inngest } from "../inngest/index.js";
 
 export const generateToken = (user) => {
   return jwt.sign(
@@ -35,10 +35,7 @@ export const signup = async (req, res) => {
     }
 
     const token = generateToken(user);
-    sendMail(email, name).catch((err) => {
-      console.error("Error sending welcome email:", err);
-    });
-
+    // await inngest.send({ name: "api/sendmail", data: { to:email, name:name } });
     return res.status(201).json({ message: "Account created", token });
   } catch (error) {
     console.error("Error while signup:", error);

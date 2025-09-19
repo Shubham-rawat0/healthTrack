@@ -1,5 +1,5 @@
 import { Workout } from "../models/workout.js";
-import { User } from "../models/user.js";
+// import { inngest } from "../inngest/index.js";
 import cloudinary from "../config/cloudinary.js";
 
 
@@ -144,3 +144,27 @@ export const updateProfile = async (req, res) => {
   }
 };
 
+// export const askAi = async (req, res) => {
+//   try {
+//     const { query } = req.body;
+//     if (!query) {
+//       return res.status(400).json({ message: "Query is required" });
+//     }
+//     const aiResponse = await inngest.send({
+//       name: "ai/askai",
+//       data: { query },
+//     });
+//     if (!aiResponse) {
+//       return res
+//         .status(500)
+//         .json({ message: "Something went wrong, please try later" });
+//     }
+//     return res.status(200).json({
+//       message: "AI response received",
+//       answer: aiResponse, 
+//     });
+//   } catch (error) {
+//     console.error("AI error:", error);
+//     return res.status(500).json({ message: "Server error" });
+//   }
+// };
