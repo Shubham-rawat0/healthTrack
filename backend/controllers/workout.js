@@ -111,3 +111,26 @@ export const deleteWorkout = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
+
+export const logWorkout = async (req, res) => {
+  const user = req.user;
+  const exerciseId = req.params.id;
+  const { completed, completedSets } = req.body; 
+
+  try {
+    const workout = await Workout.findOne({ user: user._id });
+    if (!workout) return res.status(404).json({ message: "Workout not found" });
+
+    const exercise = workout.exercises.id(exerciseId);
+    if (!exercise)
+      return res.status(404).json({ message: "Exercise not found" });
+
+    exercise.logs.push({ date: new Date(), completed, completedSets });
+    await workout.save();
+
+    res.status(200).json({ message: "Logged today’s exercise", exercise });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
