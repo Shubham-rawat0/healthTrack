@@ -7,6 +7,9 @@ export default function Profile() {
   const [user, setUser] = useState(null);
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({});
+  const [workoutImage, setWorkoutImage] = useState("");
+  const [mealImage, setMealImage] = useState("");
+  const [background, setBackground] = useState("");
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -23,6 +26,22 @@ export default function Profile() {
       }
     };
     fetchProfile();
+
+    // Randomly select workout and meal images
+    const workoutImages = [
+      "/img/workout.png",
+      "/img/workout1.png",
+      "/img/workout2.png",
+    ];
+    const mealImages = ["/img/meal.png", "/img/meal1.png", "/img/meal2.png"];
+    setWorkoutImage(
+      workoutImages[Math.floor(Math.random() * workoutImages.length)]
+    );
+    setMealImage(mealImages[Math.floor(Math.random() * mealImages.length)]);
+
+    // Randomly select background color
+    const backgrounds = ["#0f4c5c", "#064663", "#1a374d", "#2e8b57", "#23475d"]; // teal/dark tones
+    setBackground(backgrounds[Math.floor(Math.random() * backgrounds.length)]);
   }, [token]);
 
   const handleChange = (e) => {
@@ -35,6 +54,7 @@ export default function Profile() {
     e.preventDefault();
     const formData = new FormData();
     Object.keys(form).forEach((key) => formData.append(key, form[key]));
+
     try {
       const res = await axios.patch(
         `${import.meta.env.VITE_BACKEND_API}/api/auth/profileUp`,
@@ -59,17 +79,25 @@ export default function Profile() {
       flexDirection: "column",
       minHeight: "100vh",
       fontFamily: "Arial, sans-serif",
+      backgroundColor: background,
     },
     navbar: {
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
-      backgroundColor: "#111827",
+      backgroundColor: "#1f2937",
       color: "white",
-      padding: "1rem 2rem",
+      padding: "1rem",
+      margin: 0,
+      width: "100%",
     },
     logo: { fontSize: "1.5rem", fontWeight: "bold", margin: 0 },
-    navRight: { display: "flex", alignItems: "center", gap: "3rem" },
+    navRight: {
+      display: "flex",
+      alignItems: "center",
+      gap: "3rem",
+      paddingRight: "2rem",
+    },
     userName: { fontWeight: "500", fontSize: "1rem" },
     profileButton: {
       width: "32px",
@@ -93,51 +121,77 @@ export default function Profile() {
       padding: "2rem",
       display: "flex",
       flexDirection: "column",
-      gap: "3rem",
+      gap: "4rem",
     },
     section: {
       display: "flex",
       flexDirection: "row",
       alignItems: "center",
+      justifyContent: "space-around",
+      width: "80%",
+      margin: "0 auto",
       gap: "2rem",
-      padding: "1rem 0",
+      padding: "2rem",
+      border: "2px solid #d1d5db",
+      borderRadius: "15px",
+      backgroundColor: "#fff",
+    },
+    imageContainer: {
+      width: "50%",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    sectionImage: {
+      borderRadius: "20px",
+      maxHeight: "520px",
+      maxWidth: "100%",
+      objectFit: "cover",
+      boxShadow: "0 10px 20px rgba(0,0,0,0.25)",
+      transition: "transform 0.15s ease, box-shadow 0.15s ease", // reduced pop-up animation
     },
     textContainer: {
       width: "50%",
       display: "flex",
       flexDirection: "column",
       justifyContent: "center",
+      alignItems: "center",
+      textAlign: "center",
     },
     sectionTitle: {
-      fontSize: "1.75rem",
+      fontSize: "2rem",
       fontWeight: "bold",
-      marginBottom: "0.5rem",
+      marginBottom: "1rem",
       color: "black",
     },
-    sectionText: { color: "black", lineHeight: "1.5", marginBottom: "1rem" },
+    sectionText: { color: "black", lineHeight: "1.6", marginBottom: "1rem" },
     sectionButton: {
-      width: "130px",
-      padding: "0.5rem",
+      width: "140px",
+      padding: "0.6rem",
       borderRadius: "15px",
       border: "none",
       fontWeight: "500",
       cursor: "pointer",
-      transition: "transform 0.2s ease",
+      transition:
+        "transform 0.2s ease, background 0.3s ease, box-shadow 0.3s ease",
+      alignSelf: "center",
     },
     workoutButton: {
       background: "linear-gradient(135deg, #4f46e5, #3b82f6)",
       color: "white",
-      alignSelf: "center",
+      boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
     },
     mealButton: {
-      background: "linear-gradient(135deg, #f59e0b, #f97316)",
+      background: "linear-gradient(135deg, #facc15, #f97316)",
       color: "white",
-      alignSelf: "center",
+      boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
     },
     footer: {
-      backgroundColor: "#000000",
+      backgroundColor: "#000",
       textAlign: "center",
-      padding: "1rem 2rem",
+      padding: "1rem",
+      margin: 0,
+      width: "100%",
       color: "white",
     },
     modal: {
@@ -194,7 +248,6 @@ export default function Profile() {
       border: "none",
       cursor: "pointer",
     },
-    collageContainer: { position: "relative", width: "100%", height: "350px" },
   };
 
   if (!user)
@@ -217,91 +270,40 @@ export default function Profile() {
         </div>
       </nav>
 
-      {/* Main Content */}
       <main style={styles.main}>
         {/* Workout Section */}
         <div style={styles.section}>
-          <div style={{ ...styles.collageContainer }}>
-            {/* Middle landscape (largest) */}
+          <div style={styles.imageContainer}>
             <img
-              src="/img/workout.png"
-              alt="Workout main"
-              style={{
-                position: "absolute",
-                width: "320px",
-                height: "180px",
-                top: "70px",
-                left: "50%",
-                transform: "translateX(-50%)",
-                borderRadius: "0.5rem",
-                zIndex: 3,
-                objectFit: "cover",
-                boxShadow: "0 4px 8px rgba(0,0,0,0.15)",
-                transition: "transform 0.3s ease",
-                cursor: "pointer",
+              src={workoutImage}
+              alt="Workout"
+              style={styles.sectionImage}
+              onMouseOver={(e) => {
+                e.currentTarget.style.transform = "scale(1.05)";
+                e.currentTarget.style.boxShadow = "0 20px 30px rgba(0,0,0,0.4)";
               }}
-              onMouseOver={(e) =>
-                (e.currentTarget.style.transform =
-                  "translateX(-50%) scale(1.05)")
-              }
-              onMouseOut={(e) =>
-                (e.currentTarget.style.transform = "translateX(-50%) scale(1)")
-              }
-            />
-            {/* Left portrait (number 1) */}
-            <img
-              src="/img/workout1.png"
-              alt="Workout left"
-              style={{
-                position: "absolute",
-                width: "270px",
-                height: "180px",
-                top: "30px",
-                left: "calc(50% - 220px)",
-                borderRadius: "0.5rem",
-                zIndex: 2,
-                objectFit: "cover",
-                opacity: 0.9,
-                transition: "transform 0.3s ease",
-                cursor: "pointer",
+              onMouseOut={(e) => {
+                e.currentTarget.style.transform = "scale(1)";
+                e.currentTarget.style.boxShadow =
+                  "0 10px 20px rgba(0,0,0,0.25)";
               }}
-              onMouseOver={(e) =>
-                (e.currentTarget.style.transform = "scale(1.05)")
-              }
-              onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
-            />
-            {/* Right portrait (number 2) */}
-            <img
-              src="/img/workout2.png"
-              alt="Workout right"
-              style={{
-                position: "absolute",
-                width: "240px",
-                height: "160px",
-                top: "120px",
-                left: "calc(50% + 80px)",
-                borderRadius: "0.5rem",
-                zIndex: 1,
-                objectFit: "cover",
-                opacity: 0.9,
-                transition: "transform 0.3s ease",
-                cursor: "pointer",
-              }}
-              onMouseOver={(e) =>
-                (e.currentTarget.style.transform = "scale(1.05)")
-              }
-              onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
             />
           </div>
           <div style={styles.textContainer}>
             <h2 style={styles.sectionTitle}>Workout Tracking</h2>
             <p style={styles.sectionText}>
-              HealthTrack helps you track your <b>workouts</b>, monitor daily
-              exercise progress, and build consistent fitness habits.
+              Track your exercises, monitor progress, log reps and sets, set
+              fitness goals, and get insights for improvement. Stay consistent
+              with daily routines and see your growth over time. HealthTrack
+              provides charts, reminders, and tips to keep you motivated.
             </p>
             <button
-              style={{ ...styles.sectionButton, ...styles.workoutButton }}
               onClick={() => navigate("/workout")}
+              style={{ ...styles.sectionButton, ...styles.workoutButton }}
+              onMouseOver={(e) =>
+                (e.currentTarget.style.transform = "scale(1.05)")
+              }
+              onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
             >
               View Workouts
             </button>
@@ -310,87 +312,40 @@ export default function Profile() {
 
         {/* Meal Section */}
         <div style={styles.section}>
-          <div style={{ ...styles.collageContainer }}>
-            <img
-              src="/img/meal.png"
-              alt="Meal main"
-              style={{
-                position: "absolute",
-                width: "320px",
-                height: "180px",
-                top: "70px",
-                left: "50%",
-                transform: "translateX(-50%)",
-                borderRadius: "0.5rem",
-                zIndex: 3,
-                objectFit: "cover",
-                boxShadow: "0 4px 8px rgba(0,0,0,0.15)",
-                transition: "transform 0.3s ease",
-                cursor: "pointer",
-              }}
-              onMouseOver={(e) =>
-                (e.currentTarget.style.transform =
-                  "translateX(-50%) scale(1.05)")
-              }
-              onMouseOut={(e) =>
-                (e.currentTarget.style.transform = "translateX(-50%) scale(1)")
-              }
-            />
-            <img
-              src="/img/meal1.png"
-              alt="Meal left"
-              style={{
-                position: "absolute",
-                width: "270px",
-                height: "180px",
-                top: "30px",
-                left: "calc(50% - 220px)",
-                borderRadius: "0.5rem",
-                zIndex: 2,
-                objectFit: "cover",
-                opacity: 0.9,
-                transition: "transform 0.3s ease",
-                cursor: "pointer",
-              }}
-              onMouseOver={(e) =>
-                (e.currentTarget.style.transform = "scale(1.05)")
-              }
-              onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
-            />
-            <img
-              src="/img/meal2.png"
-              alt="Meal right"
-              style={{
-                position: "absolute",
-                width: "240px",
-                height: "160px",
-                top: "120px",
-                left: "calc(50% + 80px)",
-                borderRadius: "0.5rem",
-                zIndex: 1,
-                objectFit: "cover",
-                opacity: 0.9,
-                transition: "transform 0.3s ease",
-                cursor: "pointer",
-              }}
-              onMouseOver={(e) =>
-                (e.currentTarget.style.transform = "scale(1.05)")
-              }
-              onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
-            />
-          </div>
           <div style={styles.textContainer}>
             <h2 style={styles.sectionTitle}>Meal Tracking</h2>
             <p style={styles.sectionText}>
-              Stay on top of your <b>nutrition</b> with HealthTrack. Log your
-              meals, track calories, and build healthier eating patterns.
+              Log meals, track calories and macros, plan diets, and discover
+              healthier eating habits. Set nutrition goals, get suggestions for
+              balanced meals, and analyze your progress. HealthTrack helps
+              maintain consistency and supports a healthier lifestyle.
             </p>
             <button
-              style={{ ...styles.sectionButton, ...styles.mealButton }}
               onClick={() => navigate("/meal")}
+              style={{ ...styles.sectionButton, ...styles.mealButton }}
+              onMouseOver={(e) =>
+                (e.currentTarget.style.transform = "scale(1.05)")
+              }
+              onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
             >
               View Meals
             </button>
+          </div>
+          <div style={styles.imageContainer}>
+            <img
+              src={mealImage}
+              alt="Meal"
+              style={styles.sectionImage}
+              onMouseOver={(e) => {
+                e.currentTarget.style.transform = "scale(1.05)";
+                e.currentTarget.style.boxShadow = "0 20px 30px rgba(0,0,0,0.4)";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.transform = "scale(1)";
+                e.currentTarget.style.boxShadow =
+                  "0 10px 20px rgba(0,0,0,0.25)";
+              }}
+            />
           </div>
         </div>
       </main>
