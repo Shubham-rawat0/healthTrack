@@ -70,11 +70,25 @@ export default function Profile() {
   };
 
   if (!user)
-    return (
-      <p style={{ color: "#fff", textAlign: "center", marginTop: "2rem" }}>
-        Loading...
-      </p>
-    );
+   
+      return (
+        <div className="workout-page">
+          <Navbar />
+          <div className="workout-container">
+            <div className="workout-left">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="skeleton-card"></div>
+              ))}
+            </div>
+            <div className="workout-right">
+              <div className="skeleton-calendar"></div>
+              <div className="skeleton-info"></div>
+            </div>
+          </div>
+          <Footer />
+        </div>
+      );
+    
 
   return (
     <div

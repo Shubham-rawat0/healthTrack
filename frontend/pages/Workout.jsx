@@ -4,7 +4,7 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import "./Workout.css";
+import "./workout.css";
 
 export default function Workout() {
   const token = localStorage.getItem("token");
@@ -16,7 +16,7 @@ export default function Workout() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [form, setForm] = useState({});
   const [showLogPanel, setShowLogPanel] = useState(false);
-  const [logInput, setLogInput] = useState("");
+  const [logInput, setLogInput] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -105,7 +105,10 @@ export default function Workout() {
 
   const handleLogSubmit = async () => {
     if (!selectedExercise) return;
-    const payload = { completedSets: parseInt(logInput || 0) };
+    const payload = {
+      completedSets: parseInt(logInput || 0),
+      date: selectedDate,
+    };
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BACKEND_API}/api/auth/workout/log/${
@@ -120,23 +123,41 @@ export default function Workout() {
         )
       );
       setShowLogPanel(false);
-      setLogInput("");
+      setLogInput(0);
     } catch (err) {
       console.error(err);
     }
   };
 
-  if (loading) return <p className="loading-text">Loading...</p>;
+if (loading) {
+  return (
+    <div className="workout-page">
+      <Navbar />
+      <div className="workout-container">
+        <div className="workout-left">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="skeleton-card"></div>
+          ))}
+        </div>
+        <div className="workout-right">
+          <div className="skeleton-calendar"></div>
+          <div className="skeleton-info"></div>
+        </div>
+      </div>
+      <Footer />
+    </div>
+  );
+}
+
 
   return (
-    <div className="workout-container">
+    <div className="workout-page">
       <Navbar />
-
-      <div className="workout-main">
+      <div className="workout-container">
         {/* Left Panel */}
-        <div className="left-panel">
+        <div className="workout-left">
           <button
-            className="btn-add-top"
+            className="add-exercise-btn"
             onClick={() => {
               setEditingExercise(true);
               setForm({});
@@ -157,38 +178,37 @@ export default function Workout() {
                 setShowLogPanel(false);
               }}
             >
-              <div className="exercise-card-top">
-                <h3 className="exercise-name">{ex.name}</h3>
-                <div className="exercise-buttons">
-                  <button
-                    className="btn-small btn-edit"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleEditClick(ex);
-                    }}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="btn-small btn-delete"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDelete(ex._id);
-                    }}
-                  >
-                    Delete
-                  </button>
-                </div>
+              <h3>{ex.name}</h3>
+              <p>Type: {ex.type}</p>
+              <p>Target Sets: {ex.targetSets}</p>
+              <p>Duration: {ex.duration} mins</p>
+              {ex.description && <p>{ex.description}</p>}
+              <div className="exercise-btn-group">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEditClick(ex);
+                  }}
+                  className="edit-btn"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(ex._id);
+                  }}
+                  className="delete-btn"
+                >
+                  Delete
+                </button>
               </div>
-              <p className="exercise-info">Type: {ex.type}</p>
-              <p className="exercise-info">Target Sets: {ex.targetSets}</p>
-              <p className="exercise-info">Duration: {ex.duration} mins</p>
             </div>
           ))}
         </div>
 
         {/* Right Panel */}
-        <div className="right-panel">
+        <div className="workout-right">
           {selectedExercise ? (
             <>
               <Calendar
@@ -196,38 +216,31 @@ export default function Workout() {
                 onChange={setSelectedDate}
                 tileClassName={({ date, view }) => {
                   if (view === "month") {
+                    const log = getLogForDate(selectedExercise, date);
                     const today = new Date();
-                    const isToday =
-                      date.toDateString() === today.toDateString();
-                    const log = getLogForDate(selectedExercise, date);
-                    if (isToday) return "tile-today";
+                    if (date.toDateString() === today.toDateString())
+                      return "today-tile";
                     if (log.completedSets >= selectedExercise.targetSets)
-                      return "tile-completed";
-                    if (log.completedSets > 0) return "tile-partial";
-                    return "tile-empty";
-                  }
-                }}
-                tileContent={({ date, view }) => {
-                  if (view === "month") {
-                    const log = getLogForDate(selectedExercise, date);
-                    return log.completedSets > 0 ? (
-                      <div className="tile-text">
-                        {log.completedSets}/{selectedExercise.targetSets}
-                      </div>
-                    ) : null;
+                      return "completed-tile";
+                    if (log.completedSets > 0) return "partial-tile";
+                    return "not-started-tile";
                   }
                 }}
               />
 
-              <div className="selected-date-text">
-                Selected Date: {selectedDate.toDateString()}
-              </div>
-
+              {/* Info Panel */}
               <div className="info-panel">
+                <h3>
+                  {selectedExercise.name} - {selectedDate.toDateString()}
+                </h3>
+                <p>Duration: {selectedExercise.duration} mins</p>
                 <p>Target Sets: {selectedExercise.targetSets}</p>
+                <p>
+                  Sets Completed:{" "}
+                  {getLogForDate(selectedExercise, selectedDate).completedSets}
+                </p>
 
                 <button
-                  className="btn-update-log"
                   onClick={() => {
                     setShowLogPanel(!showLogPanel);
                     setLogInput(
@@ -235,6 +248,7 @@ export default function Workout() {
                         .completedSets
                     );
                   }}
+                  className="update-log-btn"
                 >
                   {showLogPanel ? "Cancel" : "Update Log"}
                 </button>
@@ -247,10 +261,9 @@ export default function Workout() {
                       max={selectedExercise.targetSets}
                       value={logInput}
                       onChange={(e) => setLogInput(e.target.value)}
-                      className="log-input"
                     />
                     / {selectedExercise.targetSets}
-                    <button className="btn-save-log" onClick={handleLogSubmit}>
+                    <button className="save-log-btn" onClick={handleLogSubmit}>
                       Save
                     </button>
                   </div>
@@ -258,17 +271,15 @@ export default function Workout() {
               </div>
             </>
           ) : (
-            <p className="select-exercise-text">
-              Select an exercise to see logs
-            </p>
+            <p>Select an exercise to see logs</p>
           )}
         </div>
       </div>
 
-      {/* Add/Edit Modal */}
+      {/* Add/Edit Exercise Modal */}
       {editingExercise && (
-        <div className="modal">
-          <form className="modal-form" onSubmit={handleExerciseSubmit}>
+        <div className="exercise-modal">
+          <form onSubmit={handleExerciseSubmit} className="exercise-form">
             <input
               type="text"
               name="name"
@@ -298,7 +309,7 @@ export default function Workout() {
               placeholder="Description"
               value={form.description || ""}
               onChange={handleChange}
-            ></textarea>
+            />
             <input
               type="number"
               name="targetSets"
@@ -307,18 +318,17 @@ export default function Workout() {
               onChange={handleChange}
               required
             />
-            <div className="modal-buttons">
-              <button type="submit" className="btn-submit">
-                {" "}
-                {form._id ? "Update" : "Add"}{" "}
+            <div className="form-btn-group">
+              <button type="submit" className="modal-add-btn">
+                {form._id ? "Update" : "Add"}
               </button>
               <button
                 type="button"
-                className="btn-cancel"
                 onClick={() => {
                   setEditingExercise(false);
                   setForm({});
                 }}
+                className="modal-cancel-btn"
               >
                 Cancel
               </button>
