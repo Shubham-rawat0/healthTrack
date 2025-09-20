@@ -1,0 +1,54 @@
+body, html { margin: 0; padding: 0; font-family: Arial, sans-serif; }
+
+.workout-container { background-color: #e2e8f0; color: #0f172a; display: flex; flex-direction: column; min-height: 100vh; }
+
+.workout-main { display: flex; flex: 1; overflow: hidden; }
+
+.left-panel { flex: 0 0 60%; overflow-y: auto; padding: 16px; }
+.right-panel { flex: 0 0 40%; padding: 16px; display: flex; flex-direction: column; }
+
+.btn-add-top { margin-bottom: 12px; padding: 6px 12px; font-size: 0.85rem; border-radius: 6px; background-color: #2563eb; color: #fff; border: none; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+.btn-add-top:hover { transform: scale(1.05); box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+
+.exercise-card { background: #ffffff; color: #0f172a; border-radius: 8px; padding: 16px; margin-bottom: 14px; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; transition: background 0.2s, box-shadow 0.2s; height: 180px; max-width: 85%; margin-left: auto; margin-right: auto; box-shadow: 0 3px 8px rgba(0,0,0,0.15); font-size: 1rem; }
+.exercise-card:hover { background: #fffffa; box-shadow: 0 5px 12px rgba(0,0,0,0.2); }
+.exercise-card.selected { background: #fffffa; }
+
+.exercise-card-top { display: flex; justify-content: space-between; align-items: center; }
+.exercise-name { font-weight: 600; margin: 0; font-size: 1.2rem; }
+.exercise-info { font-size: 0.85rem; margin: 2px 0; }
+
+.exercise-buttons { display: flex; gap: 6px; }
+.btn-small { font-size: 0.75rem; padding: 6px 10px; border-radius: 4px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+.btn-small:hover { transform: scale(1.1); box-shadow: 0 2px 5px rgba(0,0,0,0.15); }
+.btn-edit { background-color: #2563eb; color: #fff; border: none; }
+.btn-delete { background-color: #ef4444; color: #fff; border: none; }
+.btn-save-log { background-color: #16a34a; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+.btn-save-log:hover { transform: scale(1.1); box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+
+.react-calendar { border: none; color: #0f172a; background: #f5f5f5; border-radius: 8px; padding: 8px; font-family: Arial, sans-serif; }
+.tile-completed { background-color: #16a34a !important; color: white !important; border-radius: 6px !important; }
+.tile-partial { background-color: #facc15 !important; color: #0f172a !important; border-radius: 6px !important; }
+.tile-empty { background-color: #e2e8f0 !important; color: #0f172a !important; border-radius: 6px !important; }
+.tile-today { background-color: #3b82f6 !important; color: white !important; border-radius: 6px !important; font-weight: bold; }
+.tile-text { font-size: 0.75rem; text-align: center; color: #0f172a; }
+
+.selected-date-text { margin-top: 8px; font-weight: 500; text-align: center; }
+
+.info-panel { margin-top: 12px; padding: 16px; background: #e2e8f0; border-radius: 6px; }
+.btn-update-log { margin-top: 8px; padding: 8px 14px; background-color: #2563eb; color: #fff; border: none; border-radius: 6px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+.btn-update-log:hover { transform: scale(1.05); box-shadow: 0 3px 6px rgba(0,0,0,0.2); }
+
+.log-input-group { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
+.log-input { width: 70px; padding: 6px; border: 1px solid #ccc; border-radius: 4px; background: #fff; color: #0f172a; }
+
+.modal { position: fixed; top: 10%; left: 50%; transform: translateX(-50%); background: #e2e8f0; padding: 24px; border-radius: 12px; z-index: 50; width: 400px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+.modal-form { display: flex; flex-direction: column; gap: 8px; }
+.modal-form input, .modal-form textarea { padding: 8px; border-radius: 4px; border: 1px solid #ccc; background: #fff; color: #0f172a; }
+.modal-buttons { display: flex; gap: 8px; margin-top: 8px; }
+.btn-submit { flex: 1; padding: 10px; background-color: #2563eb; color: #fff; border-radius: 6px; border: none; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+.btn-submit:hover { transform: scale(1.05); box-shadow: 0 3px 6px rgba(0,0,0,0.2); }
+.btn-cancel { flex: 1; padding: 10px; background-color: #64748b; color: #fff; border-radius: 6px; border: none; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+.btn-cancel:hover { transform: scale(1.05); box-shadow: 0 3px 6px rgba(0,0,0,0.2); }
+
+.loading-text, .select-exercise-text { text-align: center; margin-top: 2rem; color: #64748b; }

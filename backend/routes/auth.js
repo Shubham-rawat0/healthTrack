@@ -17,14 +17,14 @@ router.get("/workout",authenticate,getWorkouts)
 router.get("/search",authenticate,getWorkout)
 router.post("/workout",authenticate,addWorkout)
 router.delete("/workout/:id",authenticate,deleteWorkout)
-router.post("/workout/:id",authenticate,logWorkout)
+router.post("/workout/log/:id",authenticate,logWorkout)
 
 
 router.post("/meal",authenticate,addMeal)
 router.get("/meal",authenticate,getMeals)
 router.patch("/meal/:id",authenticate,updateMeal)
 router.delete("/meal/:id",authenticate,deleteMeal)
-router.post("/meal/:id",authenticate,logMeal)
+router.post("/meal/log/:id",authenticate,logMeal)
 
 
 export default router

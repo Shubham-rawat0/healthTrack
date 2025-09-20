@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 const MealSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
@@ -11,10 +12,12 @@ const MealSchema = new mongoose.Schema(
     logs: [
       {
         date: { type: Date, default: Date.now },
-        consumed: { type: Boolean, default: false }, 
-        quantity: { type: Number, default: 0 }, 
+        consumed: { type: Boolean, default: false },
+        quantity: { type: Number, default: 0 },
       },
     ],
   },
   { timestamps: true }
 );
+
+export const Meal = mongoose.model("Meal", MealSchema);

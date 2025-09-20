@@ -112,10 +112,11 @@ export const deleteWorkout = async (req, res) => {
   }
 };
 
+// controllers/workoutController.js
 export const logWorkout = async (req, res) => {
   const user = req.user;
   const exerciseId = req.params.id;
-  const { completed, completedSets } = req.body; 
+  const { completed, completedSets, date } = req.body; // accept date
 
   try {
     const workout = await Workout.findOne({ user: user._id });
@@ -125,12 +126,36 @@ export const logWorkout = async (req, res) => {
     if (!exercise)
       return res.status(404).json({ message: "Exercise not found" });
 
-    exercise.logs.push({ date: new Date(), completed, completedSets });
+    // Use provided date or default to now
+    const logDate = date ? new Date(date) : new Date();
+
+    const sets =
+      completedSets > (exercise.targetSets || 0)
+        ? exercise.targetSets
+        : completedSets;
+
+    // Check if a log already exists for this date
+    const existingLog = exercise.logs.find(
+      (l) => new Date(l.date).toDateString() === logDate.toDateString()
+    );
+
+    if (existingLog) {
+      // Update existing log
+      existingLog.completedSets = sets;
+      existingLog.completed = completed;
+    } else {
+      // Push new log
+      exercise.logs.push({ date: logDate, completed, completedSets: sets });
+    }
+
     await workout.save();
 
-    res.status(200).json({ message: "Logged today’s exercise", exercise });
+    res.status(200).json({ message: "Logged exercise", exercise });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 };
+
+
+
