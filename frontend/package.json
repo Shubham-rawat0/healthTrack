@@ -1,13 +1,14 @@
 {
-  "name": "my-vite-app",
+  "name": "healthtrack-frontend",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "vite preview",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@radix-ui/react-dropdown-menu": "^2.1.16",
