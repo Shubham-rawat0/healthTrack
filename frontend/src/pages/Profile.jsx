@@ -2,7 +2,22 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import Footer from "../components/Footer";import workout0 from "../assets/img/workout.png";
+import workout1 from "../assets/img/workout1.png";
+import workout2 from "../assets/img/workout2.png";
+import workout3 from "../assets/img/workout3.png";
+import workout4 from "../assets/img/workout4.png";
+import workout5 from "../assets/img/workout5.png";
+import workout6 from "../assets/img/workout6.png";
+import workout7 from "../assets/img/workout7.png";
+import workout8 from "../assets/img/workout8.png";
+import workout9 from "../assets/img/workout9.png";
+
+import meal0 from "../assets/img/meal.png";
+import meal1 from "../assets/img/meal1.png";
+import meal3 from "../assets/img/meal3.png";
+import meal4 from "../assets/img/meal4.png";
+import meal5 from "../assets/img/meal5.png";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -27,26 +42,20 @@ export default function Profile() {
       }
     };
     fetchProfile();
-
-    const workoutImages = [
-      "/img/workout.png",
-      "/img/workout1.png",
-      "/img/workout2.png",
-      "/img/workout3.png",
-      "/img/workout4.png",
-      "/img/workout5.png",
-      "/img/workout6.png",
-      "/img/workout7.png",
-      "/img/workout8.png",
-      "/img/workout9.png",
-    ];
-    const mealImages = [
-      "/img/meal.png",
-      "/img/meal1.png",
-      "/img/meal3.png",
-      "/img/meal4.png",
-      "/img/meal5.png",
-    ];
+const workoutImages = [
+  workout0,
+  workout1,
+  workout2,
+  workout3,
+  workout4,
+  workout5,
+  workout6,
+  workout7,
+  workout8,
+  workout9,
+];
+const mealImages = [meal0, meal1, meal3, meal4, meal5];
+    
     setWorkoutImage(
       workoutImages[Math.floor(Math.random() * workoutImages.length)]
     );
@@ -83,25 +92,23 @@ export default function Profile() {
   };
 
   if (!user)
-   
-      return (
-        <div className="workout-page">
-          <Navbar />
-          <div className="workout-container">
-            <div className="workout-left">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="skeleton-card"></div>
-              ))}
-            </div>
-            <div className="workout-right">
-              <div className="skeleton-calendar"></div>
-              <div className="skeleton-info"></div>
-            </div>
+    return (
+      <div className="workout-page">
+        <Navbar />
+        <div className="workout-container">
+          <div className="workout-left">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="skeleton-card"></div>
+            ))}
           </div>
-          <Footer />
+          <div className="workout-right">
+            <div className="skeleton-calendar"></div>
+            <div className="skeleton-info"></div>
+          </div>
         </div>
-      );
-    
+        <Footer />
+      </div>
+    );
 
   return (
     <div
@@ -138,8 +145,8 @@ export default function Profile() {
               lists keep your workouts structured, while insightful feedback
               helps you improve every day. Stay on track, achieve your goals,
               and make every workout count with HealthTrack.
-              <br/>
-              <br/>
+              <br />
+              <br />
             </p>
             <button
               onClick={() => navigate("/workout")}
@@ -162,8 +169,8 @@ export default function Profile() {
               consistent, make healthier choices, and understand your eating
               habits better. With HealthTrack, maintaining a balanced diet
               becomes structured, insightful, and motivating
-              <br/>
-              <br/>
+              <br />
+              <br />
             </p>
             <button
               onClick={() => navigate("/meal")}

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import imageDef from "../assets/img/default.png"
 export default function Navbar({ onProfileUpdate }) {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -93,7 +93,7 @@ export default function Navbar({ onProfileUpdate }) {
             </span>
           )}
           <img
-            src={user?.pfp || "/img/default.png"}
+            src={user?.pfp || imageDef}
             alt="Profile"
             style={{
               width: "40px",

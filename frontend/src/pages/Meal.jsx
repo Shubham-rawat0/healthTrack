@@ -4,7 +4,7 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import "./meal.css";
+import "../meal.css";
 
 export default function Meal() {
   const token = localStorage.getItem("token");
