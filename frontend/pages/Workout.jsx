@@ -117,11 +117,14 @@ export default function Workout() {
         payload,
         { headers: { Authorization: `Bearer ${token}` } }
       );
+
       setExercises((prev) =>
         prev.map((ex) =>
           ex._id === res.data.exercise._id ? res.data.exercise : ex
         )
       );
+      setSelectedExercise(res.data.exercise);
+
       setShowLogPanel(false);
       setLogInput(0);
     } catch (err) {
@@ -129,26 +132,25 @@ export default function Workout() {
     }
   };
 
-if (loading) {
-  return (
-    <div className="workout-page">
-      <Navbar />
-      <div className="workout-container">
-        <div className="workout-left">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="skeleton-card"></div>
-          ))}
+  if (loading) {
+    return (
+      <div className="workout-page">
+        <Navbar />
+        <div className="workout-container">
+          <div className="workout-left">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="skeleton-card"></div>
+            ))}
+          </div>
+          <div className="workout-right">
+            <div className="skeleton-calendar"></div>
+            <div className="skeleton-info"></div>
+          </div>
         </div>
-        <div className="workout-right">
-          <div className="skeleton-calendar"></div>
-          <div className="skeleton-info"></div>
-        </div>
+        <Footer />
       </div>
-      <Footer />
-    </div>
-  );
-}
-
+    );
+  }
 
   return (
     <div className="workout-page">
@@ -238,6 +240,32 @@ if (loading) {
                 <p>
                   Sets Completed:{" "}
                   {getLogForDate(selectedExercise, selectedDate).completedSets}
+                </p>
+
+                {/* Status with color */}
+                <p>
+                  Status:{" "}
+                  <span
+                    style={{
+                      fontWeight: "bold",
+                      color:
+                        getLogForDate(selectedExercise, selectedDate)
+                          .completedSets >= selectedExercise.targetSets
+                          ? "green"
+                          : getLogForDate(selectedExercise, selectedDate)
+                              .completedSets > 0
+                          ? "orange"
+                          : "red",
+                    }}
+                  >
+                    {getLogForDate(selectedExercise, selectedDate)
+                      .completedSets >= selectedExercise.targetSets
+                      ? "Completed"
+                      : getLogForDate(selectedExercise, selectedDate)
+                          .completedSets > 0
+                      ? "In Progress"
+                      : "Not Started"}
+                  </span>
                 </p>
 
                 <button

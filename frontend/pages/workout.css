@@ -129,7 +129,9 @@
 .update-log-btn:hover {
   background-color: #1d4ed8;
 }
-
+.section-text{
+  font-size:large;
+}
 /* Log Input Group */
 .log-input-group {
   display: flex;

@@ -110,6 +110,10 @@ export default function Meal() {
       setMeals((prev) =>
         prev.map((m) => (m._id === res.data.meal._id ? res.data.meal : m))
       );
+
+      // ✅ Refresh info-panel instantly
+      setSelectedMeal(res.data.meal);
+
       setShowLogPanel(false);
     } catch (err) {
       console.error(err);
@@ -143,7 +147,6 @@ export default function Meal() {
       </div>
     );
   }
-
 
   return (
     <div className="meal-container">
@@ -200,12 +203,9 @@ export default function Meal() {
               <div className="meal-info">
                 {meal.description && <p>{meal.description}</p>}
                 <p>Calories: {meal.calories || 0}</p>
-                <p>
-                  Protein: {meal.protein}g </p>
-                  <p>Carbs: {meal.carbs}g</p>
-                  <p>Fat:{" "}
-                  {meal.fat}g</p>   
-                
+                <p>Protein: {meal.protein}g</p>
+                <p>Carbs: {meal.carbs}g</p>
+                <p>Fat: {meal.fat}g</p>
               </div>
             </div>
           ))}
@@ -239,9 +239,18 @@ export default function Meal() {
 
                 <p>
                   Status:{" "}
-                  {getLogForDate(selectedMeal, selectedDate).consumed
-                    ? "completed"
-                    : "not completed"}
+                  <span
+                    style={{
+                      fontWeight: "bold",
+                      color: getLogForDate(selectedMeal, selectedDate).consumed
+                        ? "green"
+                        : "red",
+                    }}
+                  >
+                    {getLogForDate(selectedMeal, selectedDate).consumed
+                      ? "Completed"
+                      : "Not Completed"}
+                  </span>
                 </p>
 
                 <button

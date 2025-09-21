@@ -68,15 +68,15 @@ export const deleteMeal = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
-
 export const logMeal = async (req, res) => {
   const user = req.user;
   const mealId = req.params.id;
-  const { consumed } = req.body; 
+  const { consumed } = req.body;
 
   if (typeof consumed !== "boolean") {
     return res.status(400).json({ message: "Consumed must be boolean" });
   }
+
   try {
     const meal = await Meal.findOne({ _id: mealId, user: user._id });
     if (!meal) return res.status(404).json({ message: "Meal not found" });
@@ -84,14 +84,16 @@ export const logMeal = async (req, res) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const existingLogIndex = meal.logs.findIndex(
-      (log) => new Date(log.date).setHours(0, 0, 0, 0) === today.getTime()
-    );
+    const existingLogIndex = meal.logs.findIndex((log) => {
+      const logDate = new Date(log.date);
+      logDate.setHours(0, 0, 0, 0);
+      return logDate.getTime() === today.getTime();
+    });
 
     if (existingLogIndex >= 0) {
       meal.logs[existingLogIndex].consumed = consumed;
     } else {
-      meal.logs.push({ date: new Date(), consumed });
+      meal.logs.push({ date: today, consumed });
     }
 
     await meal.save();
@@ -102,3 +104,4 @@ export const logMeal = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+

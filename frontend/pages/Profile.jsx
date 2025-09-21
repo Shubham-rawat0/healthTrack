@@ -32,8 +32,21 @@ export default function Profile() {
       "/img/workout.png",
       "/img/workout1.png",
       "/img/workout2.png",
+      "/img/workout3.png",
+      "/img/workout4.png",
+      "/img/workout5.png",
+      "/img/workout6.png",
+      "/img/workout7.png",
+      "/img/workout8.png",
+      "/img/workout9.png",
     ];
-    const mealImages = ["/img/meal.png", "/img/meal1.png", "/img/meal2.png"];
+    const mealImages = [
+      "/img/meal.png",
+      "/img/meal1.png",
+      "/img/meal3.png",
+      "/img/meal4.png",
+      "/img/meal5.png",
+    ];
     setWorkoutImage(
       workoutImages[Math.floor(Math.random() * workoutImages.length)]
     );
@@ -93,7 +106,7 @@ export default function Profile() {
   return (
     <div
       style={{
-        backgroundColor: "#111827",
+        backgroundColor: "#e0e7ef",
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
@@ -119,8 +132,14 @@ export default function Profile() {
           <div style={styles.textContainer}>
             <h2 style={styles.sectionTitle}>Workout Tracking</h2>
             <p style={styles.sectionText}>
-              Track your exercises, monitor progress, log reps and sets, set
-              fitness goals, and get insights for improvement.
+              <strong>HealthTrack</strong> makes daily fitness tracking simple
+              and motivating. Log your exercises, reps, and sets with ease, set
+              personalized goals, and monitor your progress over time. Organized
+              lists keep your workouts structured, while insightful feedback
+              helps you improve every day. Stay on track, achieve your goals,
+              and make every workout count with HealthTrack.
+              <br/>
+              <br/>
             </p>
             <button
               onClick={() => navigate("/workout")}
@@ -136,8 +155,15 @@ export default function Profile() {
           <div style={styles.textContainer}>
             <h2 style={styles.sectionTitle}>Meal Tracking</h2>
             <p style={styles.sectionText}>
-              Log meals, track calories and macros, plan diets, and discover
-              healthier eating habits.
+              <strong>HealthTrack</strong> lets you effortlessly log your daily
+              meals and monitor your nutrition. Track calories, protein, carbs,
+              and fat for every meal, set dietary goals, and see your progress
+              at a glance. Organized lists and daily logs help you stay
+              consistent, make healthier choices, and understand your eating
+              habits better. With HealthTrack, maintaining a balanced diet
+              becomes structured, insightful, and motivating
+              <br/>
+              <br/>
             </p>
             <button
               onClick={() => navigate("/meal")}

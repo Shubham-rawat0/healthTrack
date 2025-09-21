@@ -51,7 +51,7 @@ export default function Navbar({ onProfileUpdate }) {
       );
       setUser(res.data.user);
       setEditing(false);
-      onProfileUpdate?.(res.data.user); // inform parent
+      onProfileUpdate?.(res.data.user);
     } catch (err) {
       console.error(err);
     }
@@ -66,6 +66,7 @@ export default function Navbar({ onProfileUpdate }) {
 
   return (
     <>
+      {/* Navbar */}
       <nav
         style={{
           display: "flex",
@@ -73,79 +74,99 @@ export default function Navbar({ onProfileUpdate }) {
           alignItems: "center",
           backgroundColor: "#1f2937",
           color: "white",
-          padding: "1rem",
+          padding: "0.5rem 1rem",
           width: "100%",
+          boxSizing: "border-box",
+          position: "sticky",
+          top: 0,
+          zIndex: 100,
         }}
       >
-        <h1 style={{ fontSize: "1.5rem", fontWeight: "bold" }}>HealthTrack</h1>
-        <div style={{ position: "relative", marginRight: "50px" }}>
-          <button
-            onClick={() => setDropdownOpen(!dropdownOpen)}
+        <h1 style={{ fontSize: "1.5rem", fontWeight: "bold", margin: 0 }}>
+          HealthTrack
+        </h1>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          {user && (
+            <span style={{ fontWeight: "500", fontSize: "1rem" }}>
+              {user.name}
+            </span>
+          )}
+          <img
+            src={user?.pfp || "/img/default.png"}
+            alt="Profile"
             style={{
               width: "40px",
               height: "40px",
               borderRadius: "50%",
-              overflow: "hidden",
+              objectFit: "cover",
               border: "2px solid white",
-              cursor: "pointer",
-              background: "transparent",
-              padding: 0,
             }}
-          >
-            <img
-              src={user?.pfp || "/img/defaultpfp.png"}
-              alt="Profile"
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            />
-          </button>
-          {dropdownOpen && (
-            <div
+          />
+
+          <div style={{ position: "relative" }}>
+            <button
+              onClick={() => setDropdownOpen(!dropdownOpen)}
               style={{
-                position: "absolute",
-                top: "50px",
-                right: 0,
-                background: "#fff",
-                color: "#000",
-                borderRadius: "8px",
-                boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
-                width: "150px",
-                zIndex: 100,
+                fontSize: "1.5rem",
+                background: "transparent",
+                border: "none",
+                color: "white",
+                cursor: "pointer",
               }}
             >
-              <button
-                onClick={() => {
-                  setDropdownOpen(false);
-                  setEditing(true);
-                }}
+              ⋮
+            </button>
+            {dropdownOpen && (
+              <div
                 style={{
-                  width: "100%",
-                  padding: "0.5rem 1rem",
-                  border: "none",
-                  background: "transparent",
-                  cursor: "pointer",
-                  textAlign: "left",
+                  position: "absolute",
+                  top: "45px",
+                  right: 0,
+                  background: "#fff",
+                  color: "#000",
+                  borderRadius: "8px",
+                  boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
+                  width: "150px",
+                  zIndex: 100,
                 }}
               >
-                Edit Profile
-              </button>
-              <button
-                onClick={handleLogout}
-                style={{
-                  width: "100%",
-                  padding: "0.5rem 1rem",
-                  border: "none",
-                  background: "transparent",
-                  cursor: "pointer",
-                  textAlign: "left",
-                }}
-              >
-                Logout
-              </button>
-            </div>
-          )}
+                <button
+                  onClick={() => {
+                    setDropdownOpen(false);
+                    setEditing(true);
+                  }}
+                  style={{
+                    width: "100%",
+                    padding: "0.4rem 0.8rem",
+                    border: "none",
+                    background: "transparent",
+                    cursor: "pointer",
+                    textAlign: "left",
+                  }}
+                >
+                  Edit Profile
+                </button>
+                <button
+                  onClick={handleLogout}
+                  style={{
+                    width: "100%",
+                    padding: "0.4rem 0.8rem",
+                    border: "none",
+                    background: "transparent",
+                    cursor: "pointer",
+                    textAlign: "left",
+                  }}
+                >
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </nav>
 
+      {/* Profile Edit Modal */}
       {editing && (
         <div
           style={{
@@ -153,50 +174,87 @@ export default function Navbar({ onProfileUpdate }) {
             top: "10%",
             left: "50%",
             transform: "translateX(-50%)",
-            background: "#f1f5f9",
+            background: "#1e293b", // Dark background
+            color: "#f8fafc",
             padding: "2rem",
             borderRadius: "12px",
-            zIndex: 100,
-            width: "400px",
-            boxShadow: "0 5px 15px rgba(0,0,0,0.3)",
+            zIndex: 101,
+            width: "420px",
+            boxShadow: "0 5px 15px rgba(0,0,0,0.6)",
           }}
         >
           <form
             onSubmit={handleSubmit}
-            style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}
+            style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}
           >
-            <label>Edit</label>
-            <input type="file" name="pfp" placeholder="pfp" onChange={handleChange} />
-            <input
-              type="text"
-              name="name"
-              placeholder="Name"
-              value={form.name || ""}
-              onChange={handleChange}
-              required
-            />
-            <input
-              type="number"
-              name="age"
-              placeholder="Age"
-              value={form.age || ""}
-              onChange={handleChange}
-            />
-            <input
-              type="number"
-              name="weight"
-              placeholder="Weight (kg)"
-              value={form.weight || ""}
-              onChange={handleChange}
-            />
-            <input
-              type="number"
-              name="height"
-              placeholder="Height (cm)"
-              value={form.height || ""}
-              onChange={handleChange}
-            />
-            <div style={{ display: "flex", gap: "0.5rem" }}>
+            <h2 style={{ marginBottom: "0.5rem", textAlign: "center" }}>
+              Edit Profile
+            </h2>
+
+            {/* Custom File Upload */}
+            <label
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "1rem",
+              }}
+            >
+              <span style={{ width: "100px" }}>Profile Pic</span>
+              <input
+                type="file"
+                name="pfp"
+                id="file-upload"
+                style={{ display: "none" }}
+                onChange={handleChange}
+              />
+              <label
+                htmlFor="file-upload"
+                style={{
+                  background: "#2563eb",
+                  color: "#fff",
+                  padding: "0.4rem 0.8rem",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                }}
+              >
+                Upload
+              </label>
+            </label>
+
+            {[
+              { label: "Name", name: "name", type: "text" },
+              { label: "Age", name: "age", type: "number" },
+              { label: "Weight", name: "weight", type: "number" },
+              { label: "Height", name: "height", type: "number" },
+              { label: "Goal", name: "goal", type: "text" },
+            ].map((field) => (
+              <label
+                key={field.name}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "1rem",
+                }}
+              >
+                <span style={{ width: "100px" }}>{field.label}</span>
+                <input
+                  type={field.type}
+                  name={field.name}
+                  value={form[field.name] || ""}
+                  onChange={handleChange}
+                  style={{
+                    flex: 1,
+                    padding: "0.4rem",
+                    borderRadius: "6px",
+                    border: "1px solid #475569",
+                    background: "#334155",
+                    color: "#f1f5f9",
+                  }}
+                />
+              </label>
+            ))}
+
+            <div style={{ display: "flex", gap: "0.5rem", marginTop: "1rem" }}>
               <button
                 type="button"
                 onClick={() => setEditing(false)}
@@ -207,6 +265,7 @@ export default function Navbar({ onProfileUpdate }) {
                   padding: "0.5rem",
                   borderRadius: "6px",
                   border: "none",
+                  cursor: "pointer",
                 }}
               >
                 Cancel
@@ -215,11 +274,12 @@ export default function Navbar({ onProfileUpdate }) {
                 type="submit"
                 style={{
                   flex: 1,
-                  background: "#2563eb",
+                  background: "#16a34a",
                   color: "#fff",
                   padding: "0.5rem",
                   borderRadius: "6px",
                   border: "none",
+                  cursor: "pointer",
                 }}
               >
                 Save
